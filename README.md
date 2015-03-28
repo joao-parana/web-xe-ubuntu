@@ -14,7 +14,7 @@ docker pull parana/web-xe-ubuntu
 
 Run with 80, 22 and 1521 ports opened:
 ```
-docker run -d  -p 1443:80 -p 49160:22 -p 49161:1521 wnameless/oracle-xe-11g
+docker run -d  -p 1443:80 -p 49160:22 -p 49161:1521 parana/web-xe-ubuntu
 ```
 
 Connect database with following setting:
