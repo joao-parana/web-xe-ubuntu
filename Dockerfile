@@ -34,16 +34,26 @@ RUN \
 # RUN echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/bash.bashrc
 # RUN echo 'export PATH=$ORACLE_HOME/bin:$PATH' >> /etc/bash.bashrc
 # RUN echo 'export ORACLE_SID=XE' >> /etc/bash.bashrc
+RUN ls -la /u01/app/oracle/product/11.2.0/xe/bin
+RUN ls -la /bin
 RUN cat /etc/bash.bashrc
-
+RUN ps -ef | grep -i xe
 # Define working directory.
-WORKDIR /data
+# WORKDIR /data
 
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+# RUN /etc/init.d/oracle-xe start
+RUN echo $JAVA_HOME
+RUN echo `javac -version`
 
-# Define default command 
-CMD ["bash"]
+# Define default command which start Oracle XE 
+CMD sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora; \
+    service oracle-xe start; \
+    /usr/sbin/sshd -D
 
+RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
 # To Create the image use: docker build -t="parana/web-xe-ubuntu" . 
-# To Run the image use: docker run parana/web-xe-ubuntu 
+# To Run the image use: 
+# docker run -d -p 1443:80 -p 49160:22 -p 49161:1521 parana/web-xe-ubuntu 
+# 
