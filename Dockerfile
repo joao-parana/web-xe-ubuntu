@@ -26,36 +26,52 @@ RUN \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /var/cache/oracle-jdk8-installer
 
+# RUN apt-get install -y mvn
+
 # Add files.
 # ADD root/.bashrc /root/.bashrc
 # ADD root/.gitconfig /root/.gitconfig
 # ADD root/.scripts /root/.scripts
 
+RUN ls -la /root
+RUN ls -la /bin
+RUN echo 'service oracle-xe start' > /bin/start-oracle
+##  RUN echo 'su oracle -c "/u01/app/oracle/product/11.2.0/xe/bin/lsnrctl status"' >> /bin/start-oracle
+RUN echo 'echo "Please execute: tnsping XE ; lsnrctl start"' >> /bin/start-oracle
+RUN echo 'su oracle -c "/bin/bash"' >> /bin/start-oracle
+RUN chmod a+rx /bin/start-oracle
+
 # RUN echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/bash.bashrc
 # RUN echo 'export PATH=$ORACLE_HOME/bin:$PATH' >> /etc/bash.bashrc
 # RUN echo 'export ORACLE_SID=XE' >> /etc/bash.bashrc
-RUN ls -la /u01/app/oracle/product/11.2.0/xe/bin
-RUN ls -la /bin
+RUN ls -la /u01/app/oracle/product/11.2.0/xe 
+RUN ls -la /sbin
 RUN cat /etc/bash.bashrc
-RUN ps -ef | grep -i xe
 # Define working directory.
-# WORKDIR /data
+WORKDIR /data
 
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-# RUN /etc/init.d/oracle-xe start
 RUN echo $JAVA_HOME
-RUN echo `javac -version`
-RUN echo  sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
-RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
-RUN cat /etc/hosts
-    
-# Define default command which start Oracle XE 
-CMD /usr/sbin/sshd -D ; sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora ; service oracle-xe start ; cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora > /tmp/listener.ora ; cat /etc/hosts > /tmp/hosts 
-    
+RUN echo `java -version`
+RUN sed -i -E "s/HOST = [^)]+/HOST = db-server/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
+RUN sed -i -E "s/HOST = [^)]+/HOST = db-server/g" /u01/app/oracle/product/11.2.0/xe/network/admin/tnsnames.ora
 
+# Add a definition for db-server in /etc/hosts
+RUN echo $(grep $(hostname) /etc/hosts | cut -f1) db-server >> /etc/hosts     
+# Define default command which start Oracle XE 
+# CMD sed -i -E "s/HOST = [^)]+/HOST = db-server/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora ; service oracle-xe start
+
+RUN cat /bin/start-oracle
+USER root
 RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
-# To Create the image use: docker build -t="parana/web-xe-ubuntu" . 
+RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/tnsnames.ora
+CMD /bin/start-oracle
+# ; echo HOSTNAME = $HOSTNAME ; echo "Please execute: lsnrctl status ; tnsping XE ; " ; su oracle -c "/bin/bash"  
+# ; /usr/sbin/sshd -D
+
+# To Create the image use: docker build -rm  -t="parana/web-xe-ubuntu" . 
 # To Run the image use: 
-# docker run -d -p 1443:80 -p 49160:22 -p 49161:1521 parana/web-xe-ubuntu 
-# To DEBUG run the command: docker run -t -i 997485f46ec4 /bin/bash
+# docker run -h db-server -p 1443:80 -p 49160:22 -p 1521:1521 parana/web-xe-ubuntu 
+# To DEBUG run the command: docker run  -h db-server -t -i 997485f46ec4 /bin/bash
+# Execute /bin/start-oracle when prompt shell apear
