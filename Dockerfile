@@ -72,6 +72,9 @@ CMD /bin/start-oracle
 
 # To Create the image use: docker build -rm  -t="parana/web-xe-ubuntu" . 
 # To Run the image use: 
-# docker run -h db-server -p 1443:80 -p 49160:22 -p 1521:1521 parana/web-xe-ubuntu 
-# To DEBUG run the command: docker run  -h db-server -t -i 997485f46ec4 /bin/bash
+# docker run -h db-server -d -p 1443:80 -p 4460:22 -p 1521:1521  --name myxe parana/web-xe-ubuntu 
+# ssh root@192.168.59.103  -p 4460 and use passwd admin
+# To DEBUG run the command: docker exec myxe whatever-command 
 # Execute /bin/start-oracle when prompt shell apear
+# To test with sqlplus use: sqlplus system/oracle@192.168.59.103:1521/XE
+#
