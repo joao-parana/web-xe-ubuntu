@@ -46,14 +46,16 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # RUN /etc/init.d/oracle-xe start
 RUN echo $JAVA_HOME
 RUN echo `javac -version`
-
+RUN echo  sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
+RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
+RUN cat /etc/hosts
+    
 # Define default command which start Oracle XE 
-CMD sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora; \
-    service oracle-xe start; \
-    /usr/sbin/sshd -D
+CMD /usr/sbin/sshd -D ; sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora ; service oracle-xe start ; cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora > /tmp/listener.ora ; cat /etc/hosts > /tmp/hosts 
+    
 
 RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
 # To Create the image use: docker build -t="parana/web-xe-ubuntu" . 
 # To Run the image use: 
 # docker run -d -p 1443:80 -p 49160:22 -p 49161:1521 parana/web-xe-ubuntu 
-# 
+# To DEBUG run the command: docker run -t -i 997485f46ec4 /bin/bash
