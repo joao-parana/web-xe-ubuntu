@@ -38,14 +38,22 @@ RUN ls -la /bin
 RUN echo 'service oracle-xe start' > /bin/start-oracle
 ##  RUN echo 'su oracle -c "/u01/app/oracle/product/11.2.0/xe/bin/lsnrctl status"' >> /bin/start-oracle
 RUN echo 'echo "Please execute: tnsping XE ; lsnrctl start"' >> /bin/start-oracle
-RUN echo 'su oracle -c "/bin/bash"' >> /bin/start-oracle
+RUN echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /bin/start-oracle
+RUN echo 'export PATH=$ORACLE_HOME/bin:$PATH' >> /bin/start-oracle
+RUN echo 'export ORACLE_SID=XE' >> /bin/start-oracle
+RUN echo 'cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora' >> /bin/start-oracle
+RUN echo 'cat /u01/app/oracle/product/11.2.0/xe/network/admin/tnsnames.ora' >> /bin/start-oracle
+RUN echo 'ps -ef | grep oracle' >> /bin/start-oracle
+RUN echo '/u01/app/oracle/product/11.2.0/xe/bin/tnsping XE' >> /bin/start-oracle
+RUN echo 'echo "Iniciando o Daemon SSH..."' >> /bin/start-oracle
+RUN echo '/usr/sbin/sshd -D' >> /bin/start-oracle
 RUN chmod a+rx /bin/start-oracle
 
 # RUN echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/bash.bashrc
 # RUN echo 'export PATH=$ORACLE_HOME/bin:$PATH' >> /etc/bash.bashrc
 # RUN echo 'export ORACLE_SID=XE' >> /etc/bash.bashrc
-RUN ls -la /u01/app/oracle/product/11.2.0/xe 
-RUN ls -la /sbin
+# RUN ls -la /u01/app/oracle/product/11.2.0/xe 
+# RUN ls -la /sbin
 RUN cat /etc/bash.bashrc
 # Define working directory.
 WORKDIR /data
@@ -72,9 +80,9 @@ CMD /bin/start-oracle
 
 # To Create the image use: docker build -rm  -t="parana/web-xe-ubuntu" . 
 # To Run the image use: 
-# docker run -h db-server -d -p 1443:80 -p 4460:22 -p 1521:1521  --name myxe parana/web-xe-ubuntu 
-# ssh root@192.168.59.103  -p 4460 and use passwd admin
+# docker run -h db-server -p 1443:8080 -p 4460:22 -p 1521:1521 --name myxe parana/web-xe-ubuntu  & 
+# ssh root@$(docker-ip) -p 4460 and use passwd admin
 # To DEBUG run the command: docker exec myxe whatever-command 
 # Execute /bin/start-oracle when prompt shell apear
-# To test with sqlplus use: sqlplus system/oracle@192.168.59.103:1521/XE
-#
+# To test with sqlplus use: sqlplus system/oracle@$(docker-ip):1521/XE
+# To stop the container use: docker stop myxe
