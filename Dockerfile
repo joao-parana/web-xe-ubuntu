@@ -28,7 +28,7 @@ RUN \
   rm -rf /var/cache/oracle-jdk8-installer
 
 # RUN apt-get install -y mvn
-RUN apt-get install -y sudo # nodejs
+# RUN apt-get install -y sudo nodejs
 
 # Add files.
 # ADD root/.bashrc /root/.bashrc
