@@ -1,6 +1,7 @@
 # Dependencia: http://dockerfile.github.io/#/ubuntu
-# FROM dockerfile/ubuntu
 FROM wnameless/oracle-xe-11g
+
+ENV REFRESHED_AT 2017-09-19
 
 # Responsável
 MAINTAINER João Antonio Ferreira "joao.parana@gmail.com"
@@ -74,7 +75,6 @@ RUN cat /bin/start-oracle
 USER root
 RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
 RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/tnsnames.ora
-ENV REFRESHED_AT 2017-09-19
 CMD /bin/start-oracle
 # ; echo HOSTNAME = $HOSTNAME ; echo "Please execute: lsnrctl status ; tnsping XE ; " ; su oracle -c "/bin/bash"  
 # ; /usr/sbin/sshd -D
@@ -87,3 +87,4 @@ CMD /bin/start-oracle
 # Execute /bin/start-oracle when prompt shell apear
 # To test with sqlplus use: sqlplus system/oracle@$(docker-ip):1521/XE
 # To stop the container use: docker stop myxe
+
