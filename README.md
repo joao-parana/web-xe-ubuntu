@@ -1,7 +1,7 @@
 parana/web-xe-ubuntu
 ====================
 
-Oracle Java JDK 8 plus Oracle Express Edition 11g Release 2 on Ubuntu 14.04.1 LTS
+Oracle Java JDK 8 plus Oracle Express Edition 11g Release 2 on Ubuntu 16.04 LTS
 
 This **Dockerfile** is a [trusted build](https://registry.hub.docker.com/u/parana/web-xe-ubuntu/) of [Docker Registry](https://registry.hub.docker.com/).
 
