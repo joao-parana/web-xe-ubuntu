@@ -74,6 +74,7 @@ RUN cat /bin/start-oracle
 USER root
 RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
 RUN cat /u01/app/oracle/product/11.2.0/xe/network/admin/tnsnames.ora
+ENV REFRESHED_AT 2017-09-19
 CMD /bin/start-oracle
 # ; echo HOSTNAME = $HOSTNAME ; echo "Please execute: lsnrctl status ; tnsping XE ; " ; su oracle -c "/bin/bash"  
 # ; /usr/sbin/sshd -D
